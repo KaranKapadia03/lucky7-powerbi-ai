@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Lucky 7 – Decision Analytics</title>
+<title>Lucky 7 – Decision Analytics Dashboard</title>
 <link rel="stylesheet" href="style.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -10,86 +10,108 @@
 <body>
 <div class="app">
 
-<!-- NAV -->
-<aside class="nav">
-  <div class="brand">📊 Decision AI</div>
-  <button class="nav-btn active" onclick="showView('play')">🎲 Play</button>
-  <button class="nav-btn" onclick="showView('dashboard')">📈 Dashboard</button>
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <h2>📊 Decision AI</h2>
+  <button onclick="showView('play')" class="active">🎲 Simulator</button>
+  <button onclick="showView('dashboard')">📈 Analytics</button>
 </aside>
 
-<main class="main">
+<!-- MAIN -->
+<main>
 
-<!-- PLAY -->
+<!-- PLAY VIEW -->
 <section id="play" class="view active">
-<h1>Lucky 7 Betting Simulator</h1>
+  <h1>Lucky 7 Betting Simulator</h1>
 
-<div class="play-layout">
+  <div class="play-layout">
+    <!-- GAME -->
+    <div class="card">
+      <h3>Balance: ₹<span id="balance">1000</span></h3>
 
-<div class="play-card">
-  <div class="balance">Balance: ₹<span id="balance">1000</span></div>
+      <input id="betAmount" type="number" placeholder="Enter Bet Amount">
 
-  <input type="number" id="betAmount" placeholder="Enter Bet Amount">
+      <div class="bets">
+        <div onclick="selectBet('low')" id="low">2–6</div>
+        <div onclick="selectBet('seven')" id="seven">7</div>
+        <div onclick="selectBet('high')" id="high">8–12</div>
+      </div>
 
-  <div class="bet-options">
-    <div class="bet" id="low" onclick="selectBet('low')">2–6</div>
-    <div class="bet" id="seven" onclick="selectBet('seven')">7</div>
-    <div class="bet" id="high" onclick="selectBet('high')">8–12</div>
+      <button onclick="rollDice()">ROLL 🎲</button>
+
+      <div id="dice">🎲 🎲</div>
+      <div id="result">Place your bet</div>
+      <div class="timer">⏱ Decision Time: <span id="decisionTime">0</span>s</div>
+    </div>
+
+    <!-- RULES -->
+    <div class="card rules">
+      <h3>📜 Rules</h3>
+      <ul>
+        <li>Bet on 2–6, 7 or 8–12</li>
+        <li>Two dice are rolled</li>
+        <li>Win → Bet amount is doubled</li>
+        <li>Lose → Only bet is lost</li>
+        <li>Decision time is tracked</li>
+      </ul>
+
+      <h3>🧠 Analytics Scope</h3>
+      <ul>
+        <li>Risk appetite</li>
+        <li>Decision speed</li>
+        <li>Value for money</li>
+        <li>Loss-chasing behavior</li>
+      </ul>
+    </div>
   </div>
-
-  <button class="primary" onclick="rollDice()">ROLL 🎲</button>
-
-  <div class="dice" id="dice">🎲 🎲</div>
-  <div class="result" id="result">Place a bet to start</div>
-
-  <div class="timer">
-    ⏱ Decision Time: <span id="decisionTime">0</span> sec
-  </div>
-</div>
-
-<!-- RULES -->
-<div class="rules">
-  <h3>📜 Rules</h3>
-  <ul>
-    <li>Bet on 2–6, 7, or 8–12</li>
-    <li>Two dice are rolled</li>
-    <li><b>Win → Bet amount is doubled</b></li>
-    <li><b>Lose → Only bet is lost</b></li>
-    <li>Decision time is tracked</li>
-  </ul>
-</div>
-
-</div>
 </section>
 
 <!-- DASHBOARD -->
 <section id="dashboard" class="view">
-<h1>Power BI–Style Dashboard</h1>
+  <h1>Power BI–Style Decision Dashboard</h1>
 
-<div class="kpis">
-  <div class="kpi"><span>Total Bets</span><strong id="kpiBets">0</strong></div>
-  <div class="kpi success"><span>Total Won</span><strong id="kpiWon">₹0</strong></div>
-  <div class="kpi danger"><span>Total Lost</span><strong id="kpiLost">₹0</strong></div>
-  <div class="kpi"><span>Net P/L</span><strong id="kpiNet">₹0</strong></div>
-  <div class="kpi"><span>Avg Decision Time</span><strong id="kpiTime">0s</strong></div>
-  <div class="kpi"><span>Player Type</span><strong id="kpiType">—</strong></div>
-</div>
-
-<div class="charts">
-  <div class="chart-card">
-    <h3>Balance Trend</h3>
-    <canvas id="balanceChart"></canvas>
+  <!-- KPI CARDS -->
+  <div class="kpis">
+    <div class="kpi"><span>Total Bets</span><strong id="kpiBets">0</strong></div>
+    <div class="kpi green"><span>Total Won</span><strong id="kpiWon">₹0</strong></div>
+    <div class="kpi red"><span>Total Lost</span><strong id="kpiLost">₹0</strong></div>
+    <div class="kpi"><span>Net P/L</span><strong id="kpiNet">₹0</strong></div>
+    <div class="kpi"><span>Avg Bet</span><strong id="kpiAvgBet">₹0</strong></div>
+    <div class="kpi"><span>Avg Decision Time</span><strong id="kpiTime">0s</strong></div>
   </div>
-  <div class="chart-card">
-    <h3>Decision Time Trend</h3>
-    <canvas id="timeChart"></canvas>
+
+  <!-- CHARTS -->
+  <div class="grid">
+    <div class="chart-card">
+      <h4>Balance Trend</h4>
+      <canvas id="balanceChart"></canvas>
+    </div>
+
+    <div class="chart-card">
+      <h4>Bet Frequency (Bar)</h4>
+      <canvas id="betBar"></canvas>
+    </div>
+
+    <div class="chart-card">
+      <h4>Bet Preference (Pie)</h4>
+      <canvas id="betPie"></canvas>
+    </div>
+
+    <div class="chart-card">
+      <h4>Decision Time Trend</h4>
+      <canvas id="timeChart"></canvas>
+    </div>
+
+    <div class="chart-card full">
+      <h4>Decision Time vs Bet Size (Heatmap)</h4>
+      <canvas id="heatmap" width="600" height="200"></canvas>
+    </div>
   </div>
-</div>
 
-<div class="insights">
-  <h3>🤖 AI Insights</h3>
-  <p id="insightsText">Play some rounds to see insights.</p>
-</div>
-
+  <div class="card insights">
+    <h3>🤖 AI Insights</h3>
+    <p id="insights"></p>
+  </div>
 </section>
 
 </main>
